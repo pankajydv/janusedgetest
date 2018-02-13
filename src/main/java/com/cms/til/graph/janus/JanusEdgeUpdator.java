@@ -31,7 +31,7 @@ public class JanusEdgeUpdator implements Runnable{
         		has("hostid_e", hostid).as("e").
         		inV().has("msid", child).select("e").next();
         Random random = new Random(System.nanoTime());
-        edge.property("updatedAt", random.nextLong());
+//        edge.property("updatedAt", random.nextLong());
         edge.property("hrank", random.nextInt());
         trxn.commit();
         System.out.println("Commit completed for " + thread.getName());

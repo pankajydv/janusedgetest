@@ -68,8 +68,10 @@ public class JanusGraphCreator {
 			key = mgmt.makePropertyKey("msname").dataType(String.class).cardinality(Cardinality.SINGLE).make();
 		
 		//Edge
-		if(mgmt.getEdgeLabel("hie_child") == null)
+		if(mgmt.getEdgeLabel("hie_child") == null) {
 			label = mgmt.makeEdgeLabel("hie_child").multiplicity(Multiplicity.MULTI).make();
+			mgmt.setConsistency(label, ConsistencyModifier.LOCK);
+		}
 
 		if(mgmt.getPropertyKey("hostid_e") == null)
 			key = mgmt.makePropertyKey("hostid_e").dataType(Integer.class).cardinality(Cardinality.SINGLE).make();

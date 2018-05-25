@@ -24,7 +24,12 @@ public class JanusEdgeUpdator implements Runnable{
     	
     	Thread thread = Thread.currentThread();
     	
-        JanusGraphTransaction trxn = graph.newTransaction();
+        JanusGraphTransaction trxn = graph.buildTransaction()
+        		.checkExternalVertexExistence(true)
+//        		.checkInternalVertexExistence(true)
+        		.consistencyChecks(true)
+        		.start();
+//        		newTransaction();
         GraphTraversalSource g = trxn.traversal();
         
         JanusGraphEdge edge = (JanusGraphEdge)g.V().has("msid", parent).outE("hie_child").

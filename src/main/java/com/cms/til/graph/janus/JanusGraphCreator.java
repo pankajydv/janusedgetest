@@ -23,9 +23,9 @@ public class JanusGraphCreator {
 
 	private JanusGraph graph = null;
 	
-	private Integer NUM_L1 = 10;
-	private Integer NUM_L2 = 10;
-	private Integer MULTIPLIER = 123456;
+	private Integer NUM_L1 = 5;
+	private Integer NUM_L2 = 5;
+	private Integer MULTIPLIER = 10000;
 	
 	private Random randomGenerator = new Random(System.nanoTime());
 	
@@ -73,18 +73,30 @@ public class JanusGraphCreator {
 			mgmt.setConsistency(label, ConsistencyModifier.LOCK);
 		}
 
-		if(mgmt.getPropertyKey("hostid_e") == null)
+		if(mgmt.getPropertyKey("hostid_e") == null) {
 			key = mgmt.makePropertyKey("hostid_e").dataType(Integer.class).cardinality(Cardinality.SINGLE).make();
-		if(mgmt.getPropertyKey("createdat_e") == null)
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
+		if(mgmt.getPropertyKey("createdat_e") == null) {
 			key = mgmt.makePropertyKey("createdat_e").dataType(Long.class).cardinality(Cardinality.SINGLE).make();
-		if(mgmt.getPropertyKey("cmstype_e") == null)
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
+		if(mgmt.getPropertyKey("cmstype_e") == null) {
 			key = mgmt.makePropertyKey("cmstype_e").dataType(Integer.class).cardinality(Cardinality.SINGLE).make();
-		if(mgmt.getPropertyKey("status_e") == null)
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
+		if(mgmt.getPropertyKey("status_e") == null) {
 			key = mgmt.makePropertyKey("status_e").dataType(Short.class).cardinality(Cardinality.SINGLE).make();
-		if(mgmt.getPropertyKey("hname") == null)
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
+		if(mgmt.getPropertyKey("hname") == null) {
 			key = mgmt.makePropertyKey("hname").dataType(String.class).cardinality(Cardinality.SINGLE).make();
-		if(mgmt.getPropertyKey("hrank") == null)
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
+		if(mgmt.getPropertyKey("hrank") == null) {
 			key = mgmt.makePropertyKey("hrank").dataType(Float.class).cardinality(Cardinality.SINGLE).make();
+			mgmt.setConsistency(key, ConsistencyModifier.LOCK);
+		}
 		
 		RelationType hiechild = mgmt.getRelationType("hie_child");
 		if(hiechild ==null || mgmt.getRelationIndex(hiechild, "TestEdgeIndex") == null) {
@@ -110,7 +122,7 @@ public class JanusGraphCreator {
 			//create msid=0;
 			Vertex root = createMasterVertex(0, 1);
 			
-			//create level-1;
+			//create level-1, like 10000, 20000, 30000, 40000, 50000 etc;
 			Vertex l1V, l2V;
 			for(int i =1; i <= NUM_L1; i++) {
 				int l1msid = i*MULTIPLIER;
@@ -118,9 +130,12 @@ public class JanusGraphCreator {
 				Edge edge1 = createEdge(l1V, root, i);
 				edge1.property("cmstype_e", 2);
 				
-				//create level-2;
+				//create level-2, like	100001, 100002 .... 100005
+				//										200001, 200002 .... 200005
+				//										.....
+				//										500001, 500002 .... 500005
 				for(int j =1; j <= NUM_L2; j++) {
-					int l2msid = l1msid + j;
+					int l2msid = l1msid *10 + j;
 					l2V = createMasterVertex(l2msid, 1001);
 					Edge edge2= createEdge(l2V, l1V, j);
 					edge2.property("cmstype_e", 1001);
